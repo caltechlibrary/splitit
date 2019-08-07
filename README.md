@@ -24,23 +24,66 @@ Table of contents
 Introduction
 ------------
 
+The librarians at Caltech Library periodically have to perform library inventory.  In the process of doing that, they download spreadsheets of data from caltech.tind.io that have a format illustrated by the following example fragment:
 
+```
+574524,35047011136967,on shelf,,QA7 .A664 1991,
+501345,350470002009169; 35047010046266,on shelf; on shelf,,QA7 .A67 1983,
+381367,350470000767183; 350470000767192; 35047010794485,on shelf; on shelf; Limited circulation,,QA7 .S44,
+```
 
+The 2nd and 3rd lines above show examples where there are multiple results in a row, separated by semicolon (`;`) characters.  In these rows, columns 2 and 3 are parallel mappings of values, meaning that the barcode numbers in column 2 should be matched to the corresponding values in the semicolon-separated list of the 3rd column.  The other column values apply to each of the individual values in the compound.
+
+_Split It!_ is a simple program that takes such as spreadsheet, splits the compound rows into separate rows, and produces a new spreadsheet with the collected results.  For the fragment above, it would look like this:
+
+```
+574524,35047011136967,on shelf,,QA7 .A664 1991,
+501345,350470002009169,on shelf,,QA7 .A67 1983,
+501345,35047010046266,on shelf,,QA7 .A67 1983,
+381367,350470000767183,on shelf,,QA7 .S44,
+381367,350470000767192,on shelf,,QA7 .S44,
+381367,35047010794485,Limited circulation,,QA7 .S44,
+```
 
 Installation
 ------------
+
+Binary installers for Windows can be downloaded from [the project's releases page on GitHub](https://github.com/caltechlibrary/splitit/releases).  Alternatively, you can use Python `pip` to install this from the repository using the following command:
+```sh
+sudo python3 -m pip install git+https://github.com/caltechlibrary/splitit.git --upgrade
+```
+
+As a final alternative, you can instead clone this GitHub repository and then run `setup.py` manually.  First, create a directory somewhere on your computer where you want to store the files, and cd to it from a terminal shell.  Next, execute the following commands:
+```sh
+git clone https://github.com/caltechlibrary/splitit.git
+cd splitit
+sudo python3 -m pip install . --upgrade
+```
 
 
 Usage
 -----
 
-### _Basic operation_
+_Split It!_ is a command line program.  It can be used from a terminal shell.  On all systems, the installation _should_ place a new program on your shell's search path called `splitit` (or `splitit.exe` on Windows), so that you can start _Split It!_ with a simple terminal command:
+```csh
+splitit
+```
 
-### _Additional options_
+_Split It!_ accepts various command-line arguments.  To get information about the available options, use the `-h` argument (or `/h` on Windows):
+```csh
+splitit -h
+```
+
+In normal operation, _Split It!_ requires two arguments: an `-i` option (`/i` on Windows) to indicate the input CSV file, and an `-o` option (`/o` on Windows) to indicate the file where it should write the output in CSV format.  Here's an example to illustrate this:
+```csh
+splitit -i input.csv -o output.csv
+```
 
 
 Known issues and limitations
 ----------------------------
+
+_Split It!_ currently assumes that the input spreadsheet has a format consisting of 5 columns, with the 2nd and 3rd columns being the ones that contain semicolon-separated values.  It does not verify that the input spreadsheet has this format; it simply proceeds on that assumption.  If the input spreadsheet does not conform to this format, the results are unpredictable.
 
 
 Getting help
@@ -76,7 +119,11 @@ The [vector artwork](https://thenounproject.com/term/page-break/31219/) of a "pa
 
 _Split It!_ makes use of numerous open-source packages, without which it would have been effectively impossible to develop _Split It!_.  I want to acknowledge this debt.  In alphabetical order, the packages are:
 
+* [colorama](https://github.com/tartley/colorama) &ndash; makes ANSI escape character sequences work under MS Windows terminals
 * [ipdb](https://github.com/gotcha/ipdb) &ndash; the IPython debugger
+* [plac](http://micheles.github.io/plac/) &ndash; a command line argument parser
+* [setuptools](https://github.com/pypa/setuptools) &ndash; library for `setup.py`
+* [termcolor](https://pypi.org/project/termcolor/) &ndash; ANSI color formatting for output in terminal
 * [PyInstaller](http://www.pyinstaller.org) &ndash; a packaging program that creates standalone applications from Python programs for Windows, macOS, Linux and other platforms
 
 
