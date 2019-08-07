@@ -14,6 +14,7 @@ open-source software released under a 3-clause BSD license.  Please see the
 file "LICENSE" for more information.
 '''
 
+import csv
 import io
 import numpy as np
 import os
@@ -21,6 +22,7 @@ from   os import path
 from   PIL import Image
 import re
 import shutil
+import string
 import sys
 import subprocess
 import warnings
@@ -138,6 +140,24 @@ def is_url(string):
     return re.match(r'^[a-zA-Z]+:/', string)
 
 
+# The following originally came from an answer posted by user "domenukk"
+# to Stack Overflow: https://stackoverflow.com/a/54564813/743730
+
+def is_csv(infile):
+    '''Return True if the given file is probably a CSV file.'''
+    try:
+        with open(infile, newline='') as csvfile:
+            start = csvfile.read(4096)
+            # isprintable does not allow newlines, printable does not allow umlauts...
+            if not all([c in string.printable or c.isprintable() for c in start]):
+                return False
+            dialect = csv.Sniffer().sniff(start)
+            return True
+    except csv.Error:
+        # Could not get a csv dialect -> probably not a csv.
+        return False
+
+
 def relative(file):
     '''Returns a path that is relative to the current directory.  If the
     relative path would require more than one parent step (i.e., ../../*
@@ -211,6 +231,19 @@ def copy_file(src, dst):
     '''Copy a file from "src" to "dst".'''
     if __debug__: log('copying file {} to {}', src, dst)
     shutil.copy2(src, dst, follow_symlinks = True)
+
+
+def file_in_use(file):
+    if not path.exists(file):
+        return False
+    if sys.platform.startswith('win'):
+        # This is a hack, and it really only works for this purpose on Windows.
+        try:
+            os.rename(file, file)
+            return False
+        except:
+            return True
+    return False
 
 
 def open_file(file):
