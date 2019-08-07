@@ -121,7 +121,7 @@ Command-line arguments summary
         # Read it, massage it, write it.
         say.info('Reading input from "{}"'.format(input_csv))
         input_rows = []
-        with open(input_csv, newline = '') as csvfile:
+        with open(input_csv, newline = '', encoding = 'utf8') as csvfile:
             input_rows = list(csv.reader(csvfile))
 
         # Simple-minded approach to splitting compound results
