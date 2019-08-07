@@ -1,9 +1,8 @@
-Change log for REPOSITORY
-=========================
+Change log for Split It!
+========================
 
 Version 1.0.0
 -------------
 
-* Added a feature
-* Fixed a bug
-* Made another change
+* Initial release
+
