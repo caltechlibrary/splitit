@@ -67,3 +67,4 @@ __pycache__
 build
 dist
 ABOUT.html
+dev/installers/windows/splitit_innosetup_script.iss
