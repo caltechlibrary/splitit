@@ -17,7 +17,6 @@ macos_vers := $(shell sw_vers -productVersion 2>/dev/null | cut -f1-2 -d'.' || t
 github-css := dev/github-css/github-markdown-css.html
 
 about-file := ABOUT.html
-help-file  := splitit/data/help.html
 
 # Main build targets.
 
@@ -25,7 +24,7 @@ build: | dependencies build-$(platform)
 
 # Platform-specific instructions.
 
-build-darwin: dist/Splitit.app $(about-file) $(help-file) # NEWS.html
+build-darwin: dist/Splitit.app $(about-file)
 #	packagesbuild dev/installer-builders/macos/packages-config/Splitit.pkgproj
 #	mv dist/Splitit-mac.pkg dist/Splitit-$(release)-macos-$(macos_vers).pkg 
 
@@ -51,16 +50,6 @@ $(about-file): README.md
 	inliner -n < README.html > ABOUT.html
 	rm -f README.html
 
-$(help-file): splitit/data/help.md
-	pandoc --standalone --quiet -f gfm -H $(github-css) -o help-tmp.html $<
-	inliner -n < help-tmp.html > $@
-	rm -f help-tmp.html
-
-NEWS.html: NEWS.md
-	pandoc --standalone --quiet -f gfm -H $(github-css) -o NEWS.html NEWS.md
-	inliner -n < NEWS.html > NEWS-inlined.html
-	mv NEWS-inlined.html NEWS.html
-
 # Miscellaneous directives.
 
 clean: clean-dist clean-html
@@ -69,6 +58,6 @@ clean-dist:;
 	-rm -fr dist/Splitit.app dist/splitit dist/splitit.exe build
 
 clean-html:;
-	-rm -fr ABOUT.html NEWS.html
+	-rm -fr ABOUT.html
 
 .PHONY: html clean clean-dist clean-html
