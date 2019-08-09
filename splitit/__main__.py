@@ -24,6 +24,7 @@ import splitit
 from splitit.debug import set_debug, log
 from splitit.exceptions import *
 from splitit.files import readable, writable, file_in_use, is_csv
+from splitit.files import file_to_open, file_to_save
 from splitit.messages import MessageHandlerCLI
 
 
@@ -31,24 +32,30 @@ from splitit.messages import MessageHandlerCLI
 # .............................................................................
 
 @plac.annotations(
-    input_csv  = ('input file to be reformatted',                    'option', 'i'),
-    output_csv = ('output file where results should be written',     'option', 'o'),
-    no_color   = ('do not color-code terminal output',               'flag',   'C'),
-    quiet      = ('only print important messages while working',     'flag',   'q'),
-    version    = ('print version info and exit',                     'flag',   'V'),
-    debug      = ('turn on debug tracing & exception catching',      'flag',   '@'),
+    no_gui     = ('do not use GUI dialogs to ask for files (default: do)', 'flag',   'G'),
+    input_csv  = ('input file to be reformatted',                          'option', 'i'),
+    output_csv = ('output file where results should be written',           'option', 'o'),
+    no_color   = ('do not color-code terminal output',                     'flag',   'C'),
+    quiet      = ('only print important messages while working',           'flag',   'q'),
+    version    = ('print version info and exit',                           'flag',   'V'),
+    debug      = ('turn on debug tracing & exception catching',            'flag',   '@'),
 )
 
-def main(input_csv = 'I', output_csv = 'O', no_color = False, quiet = False, 
-         version = False, debug = False):
+def main(no_gui = False, input_csv = 'I', output_csv = 'O', no_color = False,
+         quiet = False, version = False, debug = False):
     '''Split It!
 
-This program must be invoked with two command-line options and values:
--i and -o (or /i and /o on Windows).  The -i option (/i on Windows) should
-be followed by the path to an input file in CSV format that contains the
-content to be reformatted; the -o option (/o on Windows) should be followed
-by the path to a new, reformatted CSV file that should be written with the
-output.  Here is an example:
+If the options -i and/or -o (or /i and /o on Windows) are not supplied, this
+program will use GUI file dialogs to ask the user for the input and/or output
+files (respectively) unless the option -G (/G on Windows) is used.
+
+If the -G option (/G on Windows) is supplied to prevent the use of the GUI,
+then this program must be invoked with two command-line options and values:
+-i and -o (or /i and /o on Windows).  The -i option (/i on Windows) should be
+followed by the path to an input file in CSV format that contains the content
+to be reformatted; the -o option (/o on Windows) should be followed by the
+path to a new, reformatted CSV file that should be written with the output.
+Here is an example:
 
   splitit -i downloaded.csv -o inventory.csv
 
@@ -78,6 +85,7 @@ Command-line arguments summary
     say = MessageHandlerCLI(not no_color, quiet)
     prefix = '/' if sys.platform.startswith('win') else '-'
     hint = '(Hint: use {}h for help.)'.format(prefix)
+    use_gui = not no_gui
 
     # Preprocess arguments and handle early exits -----------------------------
 
@@ -87,20 +95,29 @@ Command-line arguments summary
         print_version()
         exit()
 
-    if input_csv == 'I':
+    if input_csv == 'I' and use_gui:
+        input_csv = file_to_open(splitit.__title__ + ': open input CSV file',
+                                 wildcard = 'CSV file (*.csv)|*.csv|Any file (*.*)|*.*')
+        if input_csv is None:
+            exit('Quitting.')
+    else:
         exit(say.error_text('Must supply input file using -i. {}'.format(hint)))
-    elif not readable(input_csv):
+    if not readable(input_csv):
         exit(say.error_text('Cannot read file: {}'.format(input_csv)))
     elif not is_csv(input_csv):
         exit(say.error_text('File does not appear to contain CSV: {}'.format(input_csv)))
 
-    if output_csv == 'O':
+    if output_csv == 'O' and use_gui:
+        output_csv = file_to_save(splitit.__title__ + ': save output file')
+        if output_csv is None:
+            exit('Quitting.')
+    else:
         exit(say.error_text('Must supply output file using -o. {}'.format(hint)))
-    elif path.exists(output_csv):
+    if path.exists(output_csv):
         if file_in_use(output_csv):
             exit(say.error_text('File is open by another application: {}'.format(output_csv)))
         elif not writable(output_csv):
-            exit(say.error_text('Unable to write to existing file: {}'.format(output_csv)))
+            exit(say.error_text('Unable to write to file: {}'.format(output_csv)))
     else:
         dest_dir = path.dirname(output_csv) or os.getcwd()
         if not writable(dest_dir):
