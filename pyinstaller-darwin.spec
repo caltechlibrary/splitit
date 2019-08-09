@@ -14,6 +14,8 @@ import sys
 configuration = Analysis(['splitit/__main__.py'],
                          pathex = ['.'],
                          binaries = [],
+                         hiddenimports = ['apiclient', 'wx._html', 'wx._xml',
+                                          'win32timezone', 'winreg'],
                          hookspath = [],
                          runtime_hooks = [],
                          # For reasons I can't figure out, PyInstaller tries

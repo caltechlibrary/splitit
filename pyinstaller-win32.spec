@@ -15,6 +15,8 @@ import sys
 configuration = Analysis([r'splitit\__main__.py'],
                          pathex = ['.'],
                          binaries = [],
+                         hiddenimports = ['apiclient', 'wx._html', 'wx._xml',
+                                          'win32timezone', 'winreg'],
                          hookspath = [],
                          runtime_hooks = [],
                          excludes = [],
