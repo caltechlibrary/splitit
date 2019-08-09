@@ -74,10 +74,12 @@ _Split It!_ accepts various command-line arguments.  To get information about th
 splitit -h
 ```
 
-In normal operation, _Split It!_ requires two arguments: an `-i` option (`/i` on Windows) to indicate the input CSV file, and an `-o` option (`/o` on Windows) to indicate the file where it should write the output in CSV format.  Here's an example to illustrate this:
+In normal operation, _Split It!_ does not need to be started with any options; it will use GUI file dialogs to prompt for a file to open as input and a destination where to write the output.  Alternatively, these files can be provided on the command line via two options: an `-i` option (`/i` on Windows) to indicate the input CSV file, and an `-o` option (`/o` on Windows) to indicate the file where it should write the output in CSV format.  Here's an example to illustrate this:
 ```csh
 splitit -i input.csv -o output.csv
 ```
+
+If one or the other are not supplied, _Split It!_ will resort to using GUI file dialogs, unless the option `-G` (`/G` on Windows) is used to indicate that no GUI should be used.
 
 
 Known issues and limitations
