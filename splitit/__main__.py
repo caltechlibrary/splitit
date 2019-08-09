@@ -144,6 +144,8 @@ Command-line arguments summary
         # Simple-minded approach to splitting compound results
         output_rows = []
         for row in input_rows:
+            if not row or row[0] == '':
+                continue
             if ';' in row[1]:
                 new_rows = []
                 for index, part in enumerate(row[1].split(';')):
