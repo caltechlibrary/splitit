@@ -159,8 +159,8 @@ Command-line arguments summary
                 output_rows.append(row)
 
         say.info('Writing to "{}"'.format(output_csv))
-        with open(output_csv, 'w') as csvfile:
-            wr = csv.writer(csvfile)
+        with open(output_csv, 'w', encoding = 'utf8') as csvfile:
+            wr = csv.writer(csvfile, lineterminator = '\n')
             wr.writerows(output_rows)
     except (KeyboardInterrupt, UserCancelled) as ex:
         if __debug__: log('received {}', ex.__name__)
