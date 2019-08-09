@@ -6,7 +6,7 @@
 # @website https://github.com/caltechlibrary/splitit
 # =============================================================================
 
-__version__     = '1.0.0'
+__version__     = '1.1.0'
 __title__       = 'Split It!'
 __description__ = 'Reformat certain spreadsheets of results downloaded by Caltech Library staff from caltech.tind.io when they are doing inventory.'
 __url__         = 'https://github.com/caltechlibrary/splitit'

@@ -4,7 +4,7 @@ Split It!<img width="14%" align="right" src=".graphics/splitit-icon.svg">
 This is a simple program to reformat certain spreadsheets of results downloaded by Caltech Library staff from caltech.tind.io when they are doing inventory.
 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg?style=flat-square)](https://choosealicense.com/licenses/bsd-3-clause)
-[![Latest release](https://img.shields.io/badge/Latest_release-1.0.0-b44e88.svg?style=flat-square)](http://shields.io)
+[![Latest release](https://img.shields.io/badge/Latest_release-1.1.0-b44e88.svg?style=flat-square)](http://shields.io)
 
 
 Table of contents
